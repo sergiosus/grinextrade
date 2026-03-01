@@ -1,0 +1,173 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import type { Locale } from '@/lib/i18n/config';
+import { locales, localeNames, isRtl } from '@/lib/i18n/config';
+import type { Translations } from '@/lib/i18n/translations';
+import { useQuoteModal } from '@/contexts/QuoteModalContext';
+import { useState, useRef, useEffect } from 'react';
+
+const WHATSAPP_URL = 'https://wa.me/79124475419';
+const TELEGRAM_URL = 'https://t.me/grinextrade';
+const EMAIL = 'info@grinextrade.com';
+
+const navLinks: (keyof Translations['nav'])[] = ['home', 'products', 'government', 'about', 'contact'];
+const pathByNav: Record<string, string> = {
+  home: '',
+  products: 'products',
+  government: 'government',
+  about: 'about',
+  contact: 'contact',
+};
+
+type Props = { locale: Locale; translations: Translations };
+
+export function Header({ locale, translations }: Props) {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  const { openQuoteModal } = useQuoteModal();
+
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const base = `/${locale}`;
+  const nav = navLinks.map((key) => ({
+    label: translations.nav[key],
+    href: `${base}/${pathByNav[key] || ''}`.replace(/\/$/, '') || base,
+  }));
+
+  return (
+    <header className="sticky top-0 z-50">
+      <div className="bg-primary text-white/95 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center sm:justify-between h-9 gap-4 flex-wrap">
+            <a href={`mailto:${EMAIL}`} className="hover:text-white transition">{EMAIL}</a>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">WhatsApp: +7 912 447 54 19</a>
+            <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Telegram: @grinextrade</a>
+          </div>
+        </div>
+      </div>
+      <div className={`bg-white border-b transition-all duration-200 ${scrolled ? 'shadow-md bg-white/95 backdrop-blur-sm border-gray-light' : 'border-gray-light shadow-sm'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-18">
+            <Link href={base} className="text-xl font-bold text-primary hover:text-accent-red transition shrink-0">
+              Grinex Trade LLC
+            </Link>
+
+            <nav className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+              <div className="flex items-center gap-6">
+            {nav.map(({ label, href }) => {
+              const active = pathname === href || (href !== base && pathname.startsWith(href));
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`text-sm font-medium transition ${active ? 'text-primary' : 'text-brand-black hover:text-accent-red'}`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+            </div>
+          </nav>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="relative" ref={langRef}>
+              <button
+                type="button"
+                onClick={() => setLangOpen(!langOpen)}
+                className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-light bg-white text-sm font-medium text-brand-black hover:bg-gray-light"
+                aria-expanded={langOpen}
+                aria-haspopup="true"
+              >
+                {localeNames[locale]}
+                <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {langOpen && (
+                <div className="absolute top-full right-0 mt-1 w-44 py-1 bg-white rounded-lg border border-gray-light shadow-lg rtl:right-auto rtl:left-0">
+                  {locales.map((loc) => (
+                    <Link
+                      key={loc}
+                      href={pathname.replace(new RegExp(`^/(${locales.join('|')})`), `/${loc}`)}
+                      className={`block px-4 py-2 text-sm ${locale === loc ? 'bg-primary/10 text-primary font-medium' : 'text-brand-black hover:bg-gray-light'}`}
+                      onClick={() => setLangOpen(false)}
+                    >
+                      {localeNames[loc]}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => openQuoteModal()}
+              className="hidden sm:inline-flex px-4 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition"
+            >
+              {translations.nav.requestQuote}
+            </button>
+
+            <button
+              type="button"
+              className="md:hidden p-2 rounded-lg text-brand-black hover:bg-gray-light"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {menuOpen && (
+          <nav className="md:hidden py-4 border-t border-gray-light">
+            <div className="flex flex-col gap-1">
+              {nav.map(({ label, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="px-4 py-3 rounded-lg text-brand-black hover:bg-gray-light font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              ))}
+              <button
+                type="button"
+                onClick={() => { openQuoteModal(); setMenuOpen(false); }}
+                className="px-4 py-3 rounded-lg text-left font-medium bg-primary text-white hover:bg-accent-red w-full rtl:text-right"
+              >
+                {translations.nav.requestQuote}
+              </button>
+            </div>
+          </nav>
+        )}
+        </div>
+      </div>
+    </header>
+  );
+}

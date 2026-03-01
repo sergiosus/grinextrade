@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "image": "/images/waffle-towels.jpg",
+    "name": {
+      "en": "Waffle Towels",
+      "ru": "Вафельные полотенца",
+      "ar": "مناشف وافل",
+      "zh": "华夫格毛巾",
+      "tr": "Gofret Havlular",
+      "ro": "Prosoape Waffle",
+      "kk": "Вафельді сүлгілер"
+    },
+    "description": {
+      "en": "High-quality waffle weave towels for hotel and hospitality use. Soft, absorbent, durable.",
+      "ru": "Высококачественные вафельные полотенца для гостиниц и отелей. Мягкие, впитывающие, долговечные.",
+      "ar": "مناشف وافل عالية الجودة للفنادق والضيافة. ناعمة، ماصة، متينة.",
+      "zh": "高品质华夫格毛巾，适用于酒店及酒店业。柔软、吸水性好、耐用。",
+      "tr": "Otel ve konaklama için yüksek kaliteli gofret dokuma havlular. Yumuşak, emici, dayanıklı.",
+      "ro": "Prosoape waffle de înaltă calitate pentru hoteluri și ospitalitate. Moale, absorbante, durabile.",
+      "kk": "Қонақ үйлер мен қонақжайлылық үшін жоғары сапалы вафельді сүлгілер. Жұмсақ, сіңіргіш, төзімді."
+    },
+    "category": "Textile Products",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "image": "/images/bed-linen.jpg",
+    "name": {
+      "en": "Hotel Bed Linen",
+      "ru": "Гостиничное постельное бельё",
+      "ar": "ملاءات الأسرة للفنادق",
+      "zh": "酒店床上用品",
+      "tr": "Otel Yatak Çarşafları",
+      "ro": "Lenjerie de pat pentru hoteluri",
+      "kk": "Қонақ үй төсек жабдықтары"
+    },
+    "description": {
+      "en": "Premium bed linen sets for hotels. Sheets, duvet covers, pillowcases. Various sizes and thread counts.",
+      "ru": "Премиальные комплекты постельного белья для гостиниц. Простыни, пододеяльники, наволочки. Разные размеры и плотность.",
+      "ar": "مجموعات ملاءات فاخرة للفنادق. شراشف، أغطية لحاف، ووسائد. أحجام وخيوط مختلفة.",
+      "zh": "酒店专用高档床上用品套装。床单、被套、枕套。多种尺寸和支数。",
+      "tr": "Oteller için premium yatak çarşafı setleri. Çarşaflar, yorgan kılıfları, yastık kılıfları. Çeşitli boyutlar ve iplik sayıları.",
+      "ro": "Seturi premium de lenjerie de pat pentru hoteluri. Cearșafuri, coperte de plapumă, față de pernă. Dimensiuni și numărul de fire variate.",
+      "kk": "Қонақ үйлерге премиум төсек жабындары жинағы. Көшірмелер, көрпе жабындары, жастық жабындары. Әртүрлі өлшемдер."
+    },
+    "category": "Textile Products",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "image": "/images/orings.jpg",
+    "name": {
+      "en": "Oilfield O-rings",
+      "ru": "Уплотнительные кольца для нефтегазовой отрасли",
+      "ar": "حلقات O لمجال النفط",
+      "zh": "油田O型圈",
+      "tr": "Petrol Sahası O-ringleri",
+      "ro": "O-ringuri pentru câmpuri petroliere",
+      "kk": "Мұнай-газ саласы үшін тығыздағыш сақиналар"
+    },
+    "description": {
+      "en": "Industrial O-rings for oil and gas applications. NBR, Viton, EPDM. High pressure and temperature resistant.",
+      "ru": "Промышленные уплотнительные кольца для нефтегазовой отрасли. NBR, Viton, EPDM. Устойчивы к высокому давлению и температуре.",
+      "ar": "حلقات O صناعية لتطبيقات النفط والغاز. NBR، Viton، EPDM. مقاومة للضغط ودرجة الحرارة العالية.",
+      "zh": "石油天然气应用工业O型圈。NBR、Viton、EPDM。耐高压、耐高温。",
+      "tr": "Petrol ve gaz uygulamaları için endüstriyel O-ringler. NBR, Viton, EPDM. Yüksek basınç ve sıcaklığa dayanıklı.",
+      "ro": "O-ringuri industriale pentru aplicații petrol și gaze. NBR, Viton, EPDM. Rezistente la presiune și temperatură ridicată.",
+      "kk": "Мұнай және газ қолданбалары үшін өнеркәсіптік O-сақиналар. NBR, Viton, EPDM. Жоғары қысымға және температураға төзімді."
+    },
+    "category": "Oil & Gas Products",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "image": "/images/seals.jpg",
+    "name": {
+      "en": "Industrial Seals",
+      "ru": "Промышленные уплотнения",
+      "ar": "أختام صناعية",
+      "zh": "工业密封件",
+      "tr": "Endüstriyel Contalar",
+      "ro": "Garnituri industriale",
+      "kk": "Өнеркәсіптік тығыздағыштар"
+    },
+    "description": {
+      "en": "Mechanical seals and gaskets for drilling and industrial equipment. Custom sizes available.",
+      "ru": "Механические уплотнения и прокладки для бурового и промышленного оборудования. Доступны нестандартные размеры.",
+      "ar": "أختام ميكانيكية وحشيات لمعدات الحفر والصناعة. أحجام مخصصة متاحة.",
+      "zh": "钻井和工业设备用机械密封和垫片。可定制尺寸。",
+      "tr": "Sondaj ve endüstriyel ekipman için mekanik contalar ve contalar. Özel boyutlar mevcut.",
+      "ro": "Garnituri mecanice și cârpe pentru echipamente de foraj și industriale. Dimensiuni la comandă disponibile.",
+      "kk": "Бурение және өнеркәсіптік жабдықтар үшін механикалық тығыздағыштар мен прокладкалар. Тапсырыс бойынша өлшемдер қол жетімді."
+    },
+    "category": "Oil & Gas Products",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  }
+]

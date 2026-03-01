@@ -1,0 +1,43 @@
+'use client';
+
+import type { Product } from '@/types/product';
+import type { Locale } from '@/lib/i18n/config';
+import { ProductImage } from '@/components/ProductImage';
+import { useQuoteModal } from '@/contexts/QuoteModalContext';
+
+type Props = {
+  product: Product;
+  locale: Locale;
+  requestQuoteText: string;
+  categoryText: string;
+};
+
+export function ProductCard({ product, locale, requestQuoteText, categoryText }: Props) {
+  const name = product.name[locale] ?? product.name.en;
+  const description = product.description[locale] ?? product.description.en;
+  const { openQuoteModal } = useQuoteModal();
+
+  return (
+    <article className="group bg-white rounded-2xl border border-gray-light overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-light">
+        <ProductImage
+          src={product.image}
+          alt={name}
+          className="group-hover:scale-105 transition-transform duration-500"
+        />
+      </div>
+      <div className="p-5 flex-1 flex flex-col">
+        <h2 className="font-semibold text-brand-black text-lg mb-1.5">{name}</h2>
+        <p className="text-sm text-primary font-medium mb-3">{categoryText}</p>
+        <p className="text-gray-medium text-sm flex-1 line-clamp-3 leading-relaxed">{description}</p>
+        <button
+          type="button"
+          onClick={() => openQuoteModal(name)}
+          className="mt-5 inline-flex justify-center items-center px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-accent-red shadow-sm hover:shadow-md transition-all"
+        >
+          {requestQuoteText}
+        </button>
+      </div>
+    </article>
+  );
+}
