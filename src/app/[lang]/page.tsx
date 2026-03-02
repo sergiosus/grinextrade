@@ -9,10 +9,9 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
-  const t = getTranslations(lang);
   return generateSeoMetadata({
-    title: t.home.heroTitle,
-    description: t.home.heroSubtitle + ' | Grinex Trade LLC - ' + t.home.heroTitle,
+    title: '',
+    description: 'Grinex Trade LLC is an international export company supplying textile and industrial products worldwide.',
     path: '',
     locale: lang,
   });
@@ -38,7 +37,7 @@ export default async function HomePage({ params }: Props) {
               className="block rounded-2xl border border-gray-light overflow-hidden bg-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition"
             >
               <div className="aspect-[4/3] bg-gray-light">
-                <img src="/images/textile.jpg" alt="" className="w-full h-full object-cover" />
+                <img src="/images/waffle-towels.jpg" alt="" className="w-full h-full object-cover" />
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-primary mb-4">{t.home.textileProducts}</h3>
@@ -119,6 +118,18 @@ export default async function HomePage({ params }: Props) {
                 {ind}
               </span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-brand-black text-center mb-6">
+            {t.home.exportComplianceTitle}
+          </h2>
+          <div className="max-w-3xl mx-auto text-center space-y-4 text-gray-medium">
+            <p>{t.home.exportComplianceP1}</p>
+            <p>{t.home.exportComplianceP2}</p>
           </div>
         </div>
       </section>

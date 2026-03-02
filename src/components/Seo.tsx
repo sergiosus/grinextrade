@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import type { Locale } from '@/lib/i18n/config';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://grinextrade.com';
+const baseTitle = 'Grinex Trade LLC – Export Company';
+const baseDescription =
+  'Grinex Trade LLC is an international export company supplying textile and industrial products worldwide.';
 
 type Props = {
   title: string;
@@ -24,12 +27,14 @@ const localeAlternates: Record<Locale, string> = {
 export function generateSeoMetadata({ title, description, path, locale, noIndex }: Props): Metadata {
   const url = `${siteUrl}/${locale}${path}`;
   const lang = localeAlternates[locale];
+  const resolvedTitle = title ? `${title} | ${baseTitle}` : baseTitle;
+  const resolvedDescription = description || baseDescription;
   return {
-    title: title ? `${title} | Grinex Trade LLC` : 'Grinex Trade LLC - Global Export Supplier',
-    description,
+    title: resolvedTitle,
+    description: resolvedDescription,
     openGraph: {
-      title: title ? `${title} | Grinex Trade LLC` : 'Grinex Trade LLC',
-      description,
+      title: resolvedTitle,
+      description: resolvedDescription,
       url,
       siteName: 'Grinex Trade LLC',
       locale: lang,
@@ -37,8 +42,8 @@ export function generateSeoMetadata({ title, description, path, locale, noIndex 
     },
     twitter: {
       card: 'summary_large_image',
-      title: title ? `${title} | Grinex Trade LLC` : 'Grinex Trade LLC',
-      description,
+      title: resolvedTitle,
+      description: resolvedDescription,
     },
     alternates: {
       canonical: url,
@@ -54,7 +59,7 @@ export function OrganizationJsonLd() {
     name: 'Grinex Trade LLC',
     url: siteUrl,
     logo: `${siteUrl}/logo.png`,
-    description: 'International export company supplying textile and oil & gas products worldwide.',
+    description: baseDescription,
     contactPoint: {
       '@type': 'ContactPoint',
       email: 'info@grinextrade.com',

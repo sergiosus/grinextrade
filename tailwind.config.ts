@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
 const config: Config = {
   content: [
@@ -46,7 +47,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant('rtl', "[dir='rtl'] &");
+      addVariant('ltr', "[dir='ltr'] &");
+    }),
+  ],
 };
 
 export default config;
