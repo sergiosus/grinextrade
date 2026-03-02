@@ -39,6 +39,26 @@ export default async function CompliancePage({ params }: Props) {
             </Link>
           </div>
         </div>
+
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.incotermsTitle}</h2>
+          <ul className="space-y-2 text-gray-medium text-sm">
+            <li>{t.government.incotermsEXW}</li>
+            <li>{t.government.incotermsFCA}</li>
+            <li>{t.government.incotermsFOB}</li>
+          </ul>
+          <p className="mt-3 text-gray-medium text-sm italic">{t.government.incotermsNote}</p>
+        </section>
+
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.paymentTermsTitle}</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-medium">
+            {t.government.paymentTermsBullets.map((bullet, i) => (
+              <li key={i}>{bullet}</li>
+            ))}
+          </ul>
+          <p className="mt-4 text-gray-medium text-sm">{t.government.paymentTermsFootnote}</p>
+        </section>
       </div>
     </div>
   );

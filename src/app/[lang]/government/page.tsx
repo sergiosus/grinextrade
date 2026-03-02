@@ -28,17 +28,23 @@ export default async function GovernmentPage({ params }: Props) {
         <p className="text-lg text-gray-medium mb-10">{t.government.intro}</p>
 
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.exportTerms}</h2>
-          <div className="flex flex-wrap gap-2">
-            {['EXW', 'FCA'].map((term) => (
-              <span
-                key={term}
-                className="px-4 py-2 bg-primary-50 text-primary font-medium rounded-lg"
-              >
-                {term}
-              </span>
+          <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.incotermsTitle}</h2>
+          <ul className="space-y-2 text-gray-medium text-sm">
+            <li>{t.government.incotermsEXW}</li>
+            <li>{t.government.incotermsFCA}</li>
+            <li>{t.government.incotermsFOB}</li>
+          </ul>
+          <p className="mt-3 text-gray-medium text-sm italic">{t.government.incotermsNote}</p>
+        </section>
+
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.paymentTermsTitle}</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-medium">
+            {t.government.paymentTermsBullets.map((bullet, i) => (
+              <li key={i}>{bullet}</li>
             ))}
-          </div>
+          </ul>
+          <p className="mt-4 text-gray-medium text-sm">{t.government.paymentTermsFootnote}</p>
         </section>
 
         <section className="mb-10">
