@@ -61,16 +61,11 @@ export default async function GovernmentPage({ params }: Props) {
 
         <section>
           <h2 className="text-xl font-semibold text-brand-black mb-4">{t.government.tenderContact}</h2>
-          <p className="text-gray-medium mb-2">
+          <p className="text-gray-medium">
             <a href="mailto:tender@grinextrade.com" className="text-primary hover:text-accent-red hover:underline font-medium">
               tender@grinextrade.com
             </a>
           </p>
-          {t.government.generalInquiries && (
-            <p className="text-sm text-gray-medium">
-              {t.government.generalInquiries}: <a href="mailto:info@grinextrade.com" className="text-primary hover:text-accent-red hover:underline">info@grinextrade.com</a>
-            </p>
-          )}
         </section>
       </div>
     </div>

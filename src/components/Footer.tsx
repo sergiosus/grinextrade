@@ -85,7 +85,6 @@ export function Footer({ locale, translations }: Props) {
             </p>
             <div className="mt-4 text-sm text-white/90 space-y-1">
               <p>{translations.legal.country}</p>
-              <p>{translations.legal.region}</p>
               <p>
                 <span className="font-semibold">{translations.legal.directorLabel}:</span>{' '}
                 <span dir={locale === 'ru' ? undefined : 'ltr'}>{translations.legal.directorName}</span>
@@ -137,6 +136,7 @@ export function Footer({ locale, translations }: Props) {
               </a>
             </div>
             <p className="mt-3 text-sm text-white/90">
+              {translations.contact.email}:{' '}
               <a href={`mailto:${EMAIL}`} className="hover:text-white transition">
                 {EMAIL}
               </a>

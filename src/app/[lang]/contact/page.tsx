@@ -118,18 +118,6 @@ export default async function ContactPage({ params }: Props) {
           </a>
         </div>
 
-        <div className="mb-10 bg-white/95 backdrop-blur rounded-xl p-6 shadow-lg">
-          <h2 className="text-lg font-semibold text-brand-black mb-3">{t.contact.contactBlock}</h2>
-          <ul className="space-y-2 text-gray-medium">
-            <li>
-              <span className="font-medium text-brand-black">{t.contact.email}:</span>{' '}
-              <a href={`mailto:${EMAIL}`} className="text-primary hover:text-accent-red hover:underline">
-                {EMAIL}
-              </a>
-            </li>
-          </ul>
-        </div>
-
         <div className="bg-white/95 backdrop-blur rounded-xl p-6 md:p-8 shadow-lg">
           <h2 className="text-xl font-semibold text-brand-black mb-4">{t.contact.formTitle}</h2>
           <ContactForm translations={t} />

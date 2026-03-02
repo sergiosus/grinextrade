@@ -55,9 +55,10 @@ export default async function LegalPage({ params }: Props) {
             </h2>
             <ul className="space-y-2 text-sm text-gray-medium">
               <li><span className="font-semibold text-brand-black">{legal.companyLegalNameLabel}:</span> {legal.companyLegalName}</li>
-              <li><span className="font-semibold text-brand-black">{legal.registeredInLabel ?? 'Registered in'}:</span> {legal.country}</li>
-              <li><span className="font-semibold text-brand-black">{legal.directorLabel}:</span> <span dir={lang === 'ru' ? undefined : 'ltr'}>{legal.directorNameShort ?? legal.directorName}</span></li>
-              <li><span className="font-semibold text-brand-black">{legal.contactLabel ?? 'Contact'}:</span> <a href={`mailto:${EMAIL}`} className="text-primary hover:text-accent-red hover:underline">{EMAIL}</a></li>
+              <li><span className="font-semibold text-brand-black">{legal.registrationNumberLabel}:</span> {legal.ogrn}</li>
+              <li><span className="font-semibold text-brand-black">{legal.taxNumberLabel}:</span> {legal.inn}</li>
+              <li><span className="font-semibold text-brand-black">{legal.kppLabel}:</span> {legal.kpp}</li>
+              <li><span className="font-semibold text-brand-black">{legal.directorLabel}:</span> <span dir={lang === 'ru' ? undefined : 'ltr'}>{legal.directorName}</span></li>
             </ul>
           </section>
 
