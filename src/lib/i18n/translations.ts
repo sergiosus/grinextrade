@@ -60,6 +60,7 @@ const en = {
   home: {
     heroTitle: 'Global Export Supplier',
     heroSubtitle: 'Textile products and industrial components for international markets.',
+    metaDescription: 'Grinex Trade LLC supplies textile products and industrial components worldwide including waffle towels, hotel bedding, O-rings and sealing solutions.',
     contactUs: 'Contact Us',
     requestQuote: 'Request Quote',
     viewProducts: 'View Products',
@@ -307,6 +308,7 @@ const ru: Translations = {
   home: {
     heroTitle: 'Глобальный экспортный поставщик',
     heroSubtitle: 'Текстильная продукция и компоненты для нефтегазовой отрасли по всему миру',
+    metaDescription: 'ООО «Гринекс Трейд» поставляет текстильную и промышленную продукцию по всему миру: вафельные полотенца, гостинильное бельё, уплотнительные кольца и решения.',
     contactUs: 'Связаться',
     requestQuote: 'Запросить цену',
     viewProducts: 'Каталог',
@@ -543,6 +545,7 @@ const ar: Translations = {
   home: {
     heroTitle: 'مورد التصدير العالمي',
     heroSubtitle: 'منتجات النسيج ومكونات النفط والغاز في جميع أنحاء العالم',
+    metaDescription: 'توفر Grinex Trade LLC منتجات النسيج والمكونات الصناعية عالمياً بما في ذلك مناشف وافل وملاءات الفنادق وحلقات O وحلول الإغلاق.',
     contactUs: 'اتصل بنا',
     requestQuote: 'طلب عرض سعر',
     viewProducts: 'عرض المنتجات',
@@ -779,6 +782,7 @@ const zh: Translations = {
   home: {
     heroTitle: '全球出口供应商',
     heroSubtitle: '纺织品及石油天然气零部件全球供应',
+    metaDescription: 'Grinex Trade LLC 全球供应纺织品与工业零部件，包括华夫格毛巾、酒店寝具、O型圈与密封解决方案。',
     contactUs: '联系我们',
     requestQuote: '请求报价',
     viewProducts: '查看产品',
@@ -1015,6 +1019,7 @@ const tr: Translations = {
   home: {
     heroTitle: 'Küresel İhracat Tedarikçisi',
     heroSubtitle: 'Dünya genelinde tekstil ürünleri ve petrol & gaz bileşenleri',
+    metaDescription: 'Grinex Trade LLC dünya genelinde waffle havlular, otel yatakları, O-ringler ve contalar dahil tekstil ve endüstriyel ürünler tedarik eder.',
     contactUs: 'İletişim',
     requestQuote: 'Teklif İste',
     viewProducts: 'Ürünleri Görüntüle',
@@ -1251,6 +1256,7 @@ const ro: Translations = {
   home: {
     heroTitle: 'Furnizor Global de Export',
     heroSubtitle: 'Produse textile și componente petrol & gaze în întreaga lume',
+    metaDescription: 'Grinex Trade LLC furnizează produse textile și componente industriale în întreaga lume, inclusiv prosoape waffle, lenjerie hotelieră, O-ringuri și soluții de etanșare.',
     contactUs: 'Contactați-ne',
     requestQuote: 'Cere ofertă',
     viewProducts: 'Vezi produse',
@@ -1487,6 +1493,7 @@ const kk: Translations = {
   home: {
     heroTitle: 'Жаһандық экспорт жеткізушісі',
     heroSubtitle: 'Жоғары сапалы тоқыма және мұнай-газ өнімдері бүкіл әлем бойынша',
+    metaDescription: 'Grinex Trade LLC вафельді сүлгілер, қонақ үй төсеніштері, O-сақиналар және тығыздағыш шешімдері қоса алғанда тоқыма және өнеркәсіптік өнімдерді бүкіл әлем бойынша жеткізеді.',
     contactUs: 'Байланыс',
     requestQuote: 'Баға сұрау',
     viewProducts: 'Өнімдерді көру',

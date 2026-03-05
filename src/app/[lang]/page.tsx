@@ -9,9 +9,10 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
+  const t = getTranslations(lang);
   return generateSeoMetadata({
     title: '',
-    description: 'Grinex Trade LLC supplies textile products and industrial components worldwide including waffle towels, hotel bedding, O-rings and sealing solutions.',
+    description: t.home.metaDescription,
     path: '',
     locale: lang,
   });
