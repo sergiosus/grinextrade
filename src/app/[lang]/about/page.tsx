@@ -29,7 +29,6 @@ export default async function AboutPage({ params }: Props) {
           <p className="text-lg text-gray-medium mb-4">{t.about.p1}</p>
           <p className="text-lg text-gray-medium">{t.about.p2}</p>
         </div>
-        <p className="mt-8 text-brand-black font-semibold">Grinex Trade LLC</p>
       </div>
     </div>
   );
