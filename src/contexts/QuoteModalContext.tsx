@@ -70,6 +70,8 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
   const t = (translations as Translations & { quoteModal?: Record<string, string> }).quoteModal ?? {
     title: 'Request Quote',
     productLabel: 'Product',
+    quantityLabel: 'Quantity',
+    requestQuoteButton: 'REQUEST QUOTE',
     companyName: 'Company name',
     contactPerson: 'Contact person',
     email: 'Email',
@@ -82,8 +84,10 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
     close: 'Close',
     toastDraft: 'Draft prepared. Send it in WhatsApp/Email.',
   };
+  const rfqSuccess = (translations as Translations).common?.rfqSuccess ?? 'Thank you. Our sales team will contact you shortly.';
 
   const [product, setProduct] = useState(initialProduct);
+  const [quantity, setQuantity] = useState('');
   const [company, setCompany] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [email, setEmail] = useState('');
@@ -91,36 +95,16 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
   const [country, setCountry] = useState('');
   const [message, setMessage] = useState('');
   const [toast, setToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const isProductReadonly = !!initialProduct;
 
-  const buildWhatsAppText = useCallback(() => {
-    const lines = [
+  const quantityLabel = t.quantityLabel ?? 'Quantity';
+
+  const buildBody = useCallback(() => {
+    return [
       t.productLabel + ': ' + (product || '-'),
-      t.companyName + ': ' + company,
-      t.contactPerson + ': ' + contactPerson,
-      t.email + ': ' + email,
-      t.phone + ': ' + phone,
-      t.country + ': ' + country,
-      t.message + ': ' + message,
-    ];
-    return encodeURIComponent(lines.join('\n'));
-  }, [t, product, company, contactPerson, email, phone, country, message]);
-
-  const showToast = useCallback(() => {
-    setToast(true);
-    setTimeout(() => setToast(false), 3000);
-  }, []);
-
-  const handleWhatsApp = () => {
-    const text = buildWhatsAppText();
-    window.open(`${WHATSAPP_URL}?text=${text}`, '_blank');
-    showToast();
-  };
-
-  const handleEmail = () => {
-    const body = [
-      t.productLabel + ': ' + (product || '-'),
+      quantityLabel + ': ' + quantity,
       t.companyName + ': ' + company,
       t.contactPerson + ': ' + contactPerson,
       t.email + ': ' + email,
@@ -128,8 +112,34 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
       t.country + ': ' + country,
       t.message + ': ' + message,
     ].join('\n');
+  }, [t, product, quantity, quantityLabel, company, contactPerson, email, phone, country, message]);
+
+  const buildWhatsAppText = useCallback(() => {
+    return encodeURIComponent(buildBody());
+  }, [buildBody]);
+
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    setToast(true);
+    setTimeout(() => setToast(false), 4000);
+  }, []);
+
+  const handleRequestQuote = () => {
+    const body = buildBody();
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
-    showToast();
+    showToast(rfqSuccess);
+    setTimeout(onClose, 2500);
+  };
+
+  const handleWhatsApp = () => {
+    window.open(`${WHATSAPP_URL}?text=${buildWhatsAppText()}`, '_blank');
+    showToast(t.toastDraft ?? 'Draft prepared. Send it in WhatsApp/Email.');
+  };
+
+  const handleEmail = () => {
+    const body = buildBody();
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
+    showToast(t.toastDraft ?? 'Draft prepared. Send it in WhatsApp/Email.');
   };
 
   return (
@@ -166,6 +176,16 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
                 onChange={(e) => setProduct(e.target.value)}
                 readOnly={isProductReadonly}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 bg-gray-light/50 read-only:opacity-80"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-brand-black mb-1">{quantityLabel}</label>
+              <input
+                type="text"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="e.g. 1000 pcs"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
@@ -227,6 +247,13 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
             <div className="flex flex-wrap gap-3 pt-2">
               <button
                 type="button"
+                onClick={handleRequestQuote}
+                className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-accent-red transition"
+              >
+                {t.requestQuoteButton ?? 'REQUEST QUOTE'}
+              </button>
+              <button
+                type="button"
                 onClick={handleWhatsApp}
                 className="px-5 py-2.5 bg-[#25D366] text-white font-medium rounded-lg hover:opacity-90 transition"
               >
@@ -235,7 +262,7 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
               <button
                 type="button"
                 onClick={handleEmail}
-                className="px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition"
+                className="px-5 py-2.5 bg-brand-black text-white font-medium rounded-lg hover:opacity-90 transition"
               >
                 {t.sendViaEmail}
               </button>
@@ -252,7 +279,7 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
       </div>
       {toast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[101] px-6 py-3 bg-primary text-white rounded-xl shadow-lg text-sm font-medium">
-          {t.toastDraft}
+          {toastMessage}
         </div>
       )}
     </>

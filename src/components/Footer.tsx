@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Locale } from '@/lib/i18n/config';
 import type { Translations } from '@/lib/i18n/translations';
 import { FooterLang } from '@/components/FooterLang';
+import { CookieSettingsLink } from '@/components/CookieConsent';
 
 const WHATSAPP_URL = 'https://wa.me/79124475419';
 const TELEGRAM_URL = 'https://t.me/grinextrade';
@@ -16,6 +17,7 @@ const quickLinkPaths: { key: keyof Translations['nav']; path: string }[] = [
   { key: 'legal', path: 'legal' },
   { key: 'privacy', path: 'privacy' },
   { key: 'terms', path: 'terms' },
+  { key: 'cookies', path: 'cookies' },
   { key: 'compliance', path: 'compliance' },
 ];
 
@@ -93,7 +95,7 @@ export function Footer({ locale, translations }: Props) {
           </div>
           <div>
             <p className="font-semibold mb-3">{translations.footer.quickLinks}</p>
-            <ul className="space-y-2 text-sm text-white/90">
+            <ul className="list-none m-0 p-0 space-y-2 text-sm text-white/90">
               {quickLinkPaths.map(({ key, path }) => (
                 <li key={key}>
                   <Link href={path ? `${base}/${path}` : base} className="hover:text-white transition">
@@ -101,6 +103,9 @@ export function Footer({ locale, translations }: Props) {
                   </Link>
                 </li>
               ))}
+              <li>
+                <CookieSettingsLink label={translations.cookies.cookieSettings} />
+              </li>
             </ul>
           </div>
           <div>
@@ -145,7 +150,7 @@ export function Footer({ locale, translations }: Props) {
             <FooterLang currentLocale={locale} />
           </div>
         </div>
-        <div className="mt-10 pt-8 border-t border-white/20 text-center text-sm text-white/70">
+        <div className="mt-8 pt-6 border-t border-white/20 text-center text-sm text-white/70">
           {translations.footer.copyright.replace('{year}', String(year))}
         </div>
       </div>

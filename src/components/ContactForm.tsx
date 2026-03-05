@@ -4,20 +4,41 @@ import { useState } from 'react';
 import type { Translations } from '@/lib/i18n/translations';
 import { CountrySelect } from '@/components/CountrySelect';
 
-type Props = { translations: Translations };
+const RFQ_EMAIL = 'info@grinextrade.com';
+const RFQ_SUBJECT = 'Quote request — Grinex Trade LLC';
 
-export function ContactForm({ translations: t }: Props) {
+type Props = { translations: Translations; initialProductName?: string };
+
+export function ContactForm({ translations: t, initialProductName = '' }: Props) {
   const [company, setCompany] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
+  const [productName, setProductName] = useState(initialProductName);
+  const [quantity, setQuantity] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'rfqSuccess'>('idle');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('success');
+  };
+
+  const handleRequestQuote = (e: React.FormEvent) => {
+    e.preventDefault();
+    const body = [
+      t.contact.companyName + ': ' + company,
+      t.contact.contactPerson + ': ' + contactPerson,
+      t.contact.email + ': ' + email,
+      t.contact.phone + ': ' + phone,
+      t.contact.country + ': ' + country,
+      t.contact.productName + ': ' + productName,
+      t.contact.quantity + ': ' + quantity,
+      t.contact.message + ': ' + message,
+    ].join('\n');
+    window.location.href = `mailto:${RFQ_EMAIL}?subject=${encodeURIComponent(RFQ_SUBJECT)}&body=${encodeURIComponent(body)}`;
+    setStatus('rfqSuccess');
   };
 
   const contactLabels = t.contact;
@@ -27,6 +48,9 @@ export function ContactForm({ translations: t }: Props) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {status === 'success' && (
         <p className="p-3 rounded-lg bg-green-100 text-green-800 text-sm">{common.formSuccess}</p>
+      )}
+      {status === 'rfqSuccess' && (
+        <p className="p-3 rounded-lg bg-green-100 text-green-800 text-sm">{common.rfqSuccess}</p>
       )}
       {status === 'error' && (
         <p className="p-3 rounded-lg bg-red-100 text-red-800 text-sm">{common.formError}</p>
@@ -79,6 +103,26 @@ export function ContactForm({ translations: t }: Props) {
         />
       </div>
       <div>
+        <label className="block text-sm font-medium text-brand-black mb-1">{contactLabels.productName}</label>
+        <input
+          type="text"
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
+          placeholder={contactLabels.productName}
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-brand-black mb-1">{contactLabels.quantity}</label>
+        <input
+          type="text"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          placeholder="e.g. 1000 pcs"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+        />
+      </div>
+      <div>
         <label className="block text-sm font-medium text-brand-black mb-1">{contactLabels.message}</label>
         <textarea
           value={message}
@@ -87,12 +131,21 @@ export function ContactForm({ translations: t }: Props) {
           className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
-      <button
-        type="submit"
-        className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition"
-      >
-        {contactLabels.sendRequest}
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="submit"
+          className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition"
+        >
+          {contactLabels.sendRequest}
+        </button>
+        <button
+          type="button"
+          onClick={handleRequestQuote}
+          className="px-6 py-2.5 bg-brand-black text-white font-medium rounded-lg hover:bg-gray-800 transition"
+        >
+          {contactLabels.requestQuote}
+        </button>
+      </div>
     </form>
   );
 }

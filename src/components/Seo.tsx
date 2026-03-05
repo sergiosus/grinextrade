@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import type { Locale } from '@/lib/i18n/config';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://grinextrade.com';
-const baseTitle = 'Grinex Trade LLC – Export Company';
+const baseTitle = 'Grinex Trade LLC – International Export Supplier';
 const baseDescription =
-  'Grinex Trade LLC is an international export company supplying textile and industrial products worldwide.';
+  'Grinex Trade LLC supplies textile products and industrial components worldwide including waffle towels, hotel bedding, O-rings and sealing solutions.';
 
 type Props = {
   title: string;

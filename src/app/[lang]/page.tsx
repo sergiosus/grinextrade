@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
   return generateSeoMetadata({
     title: '',
-    description: 'Grinex Trade LLC is an international export company supplying textile and industrial products worldwide.',
+    description: 'Grinex Trade LLC supplies textile products and industrial components worldwide including waffle towels, hotel bedding, O-rings and sealing solutions.',
     path: '',
     locale: lang,
   });
@@ -70,6 +70,59 @@ export default async function HomePage({ params }: Props) {
 
       <section className="py-16 md:py-20 bg-gray-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-brand-black text-center mb-12 uppercase tracking-wide">
+            {t.home.globalExportTitle}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {t.home.globalExportItems.map((item, i) => (
+              <div
+                key={item}
+                className="bg-white rounded-xl p-6 shadow-sm border border-gray-light flex items-start gap-4"
+              >
+                <span className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  {i === 0 && (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0h.5a2.5 2.5 0 002.5-2.5V3.935M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                  {i === 1 && (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                  )}
+                  {i === 2 && (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  )}
+                  {i === 3 && (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  )}
+                </span>
+                <p className="font-medium text-brand-black">{item}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            {t.home.terms.map((term) => (
+              <span
+                key={term}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-white text-primary font-semibold rounded-lg border border-primary/30 shadow-sm"
+              >
+                <svg className="w-5 h-5 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                {term}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-brand-black text-center mb-12">
             {t.home.whyChooseUs}
           </h2>
@@ -86,39 +139,56 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-brand-black text-center mb-12">
-            {t.home.exportTerms}
-          </h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            {t.home.terms.map((term) => (
-              <span
-                key={term}
-                className="px-6 py-3 bg-primary-50 text-primary font-semibold rounded-lg border border-primary-200"
-              >
-                {term}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="py-16 md:py-20 bg-gray-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-brand-black text-center mb-12">
             {t.home.industriesServed}
           </h2>
-          <div className="flex flex-wrap justify-center gap-3">
-            {t.home.industries.map((ind) => (
-              <span
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {(t.home.industriesCards ?? t.home.industries).map((ind) => (
+              <div
                 key={ind}
-                className="px-5 py-2.5 bg-white border border-gray-light rounded-lg font-medium text-gray-medium shadow-sm"
+                className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-light hover:shadow-md transition"
               >
-                {ind}
-              </span>
+                <p className="font-medium text-brand-black">{ind}</p>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-brand-black text-center mb-8 uppercase tracking-wide">
+            {t.home.exportDocTitle}
+          </h2>
+          <ul className="max-w-2xl mx-auto space-y-3 text-gray-medium mb-6">
+            {(t.home.exportDocList ?? []).map((doc) => (
+              <li key={doc} className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {doc}
+              </li>
+            ))}
+          </ul>
+          <p className="text-center text-gray-medium max-w-2xl mx-auto">
+            {t.home.exportDocNote}
+          </p>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20 bg-gray-light">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-brand-black mb-6">
+            {t.home.trustedPartnerTitle}
+          </h2>
+          <p className="text-gray-medium text-lg leading-relaxed mb-4">
+            {t.home.trustedPartnerP1}
+          </p>
+          <p className="text-gray-medium text-lg leading-relaxed">
+            {t.home.trustedPartnerP2}
+          </p>
         </div>
       </section>
 
