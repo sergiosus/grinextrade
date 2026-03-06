@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import type { Locale } from '@/lib/i18n/config';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://grinextrade.com';
-const baseTitle = 'Grinex Trade LLC – International Export Supplier';
+const baseTitle = 'Grinex Trade LLC – Supplier of industrial and textile products';
 const baseDescription =
-  'Grinex Trade LLC supplies textile products and industrial components worldwide including waffle towels, hotel bedding, O-rings and sealing solutions.';
+  'Grinex Trade LLC supplies textile and industrial products for international B2B clients. Product range includes waffle towels, hotel bedding, O-rings and sealing solutions.';
 
 type Props = {
   title: string;
@@ -65,7 +65,7 @@ export function OrganizationJsonLd() {
       email: 'info@grinextrade.com',
       telephone: '+7-912-447-54-19',
       contactType: 'customer service',
-      areaServed: 'Worldwide',
+      areaServed: 'International',
     },
     sameAs: ['https://t.me/grinextrade'],
   };

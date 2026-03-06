@@ -8,18 +8,23 @@ const WHATSAPP_URL = 'https://wa.me/79124475419';
 const TELEGRAM_URL = 'https://t.me/grinextrade';
 const EMAIL = 'info@grinextrade.com';
 
-const quickLinkPaths: { key: keyof Translations['nav']; path: string }[] = [
-  { key: 'home', path: '' },
-  { key: 'products', path: 'products' },
-  { key: 'government', path: 'government' },
-  { key: 'about', path: 'about' },
-  { key: 'contact', path: 'contact' },
-  { key: 'legal', path: 'legal' },
-  { key: 'privacy', path: 'privacy' },
-  { key: 'terms', path: 'terms' },
-  { key: 'cookies', path: 'cookies' },
-  { key: 'compliance', path: 'compliance' },
-];
+const mainNavKeys: (keyof Translations['nav'])[] = ['home', 'products', 'government', 'about', 'contact'];
+const mainNavPaths: Record<string, string> = {
+  home: '',
+  products: 'products',
+  government: 'government',
+  about: 'about',
+  contact: 'contact',
+};
+
+const legalNavKeys: (keyof Translations['nav'])[] = ['legal', 'privacy', 'terms', 'cookies', 'compliance'];
+const legalNavPaths: Record<string, string> = {
+  legal: 'legal',
+  privacy: 'privacy',
+  terms: 'terms',
+  cookies: 'cookies',
+  compliance: 'compliance',
+};
 
 type Props = { locale: Locale; translations: Translations };
 
@@ -72,33 +77,55 @@ const TELEGRAM_ICON = (
   </svg>
 );
 
+const ICON_BUTTON_CLASS =
+  'inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 transition focus:outline-none focus:ring-2 focus:ring-white/40';
+
 export function Footer({ locale, translations }: Props) {
   const year = new Date().getFullYear();
   const base = `/${locale}`;
+  const f = translations.footer;
 
   return (
     <footer className="bg-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+          {/* Column 1 — Company */}
           <div>
-            <p className="font-bold text-lg">{translations.footer.company}</p>
-            <p className="mt-3 text-sm text-white/85 leading-relaxed max-w-xs">
-              {translations.footer.disclaimer}
+            <p className="font-bold text-lg">{f.company}</p>
+            <p className="mt-3 text-sm text-white/85 leading-relaxed">
+              {f.companyDesc1}
+              <br />
+              {f.companyDesc2}
             </p>
-            <div className="mt-4 text-sm text-white/90 space-y-1">
-              <p>{translations.legal.country}</p>
-              <p>
-                <span className="font-semibold">{translations.legal.directorLabel}:</span>{' '}
-                <span dir={locale === 'ru' ? undefined : 'ltr'}>{translations.legal.directorName}</span>
-              </p>
-            </div>
           </div>
+
+          {/* Column 2 — Main */}
           <div>
-            <p className="font-semibold mb-3">{translations.footer.quickLinks}</p>
+            <p className="font-semibold mb-3">{f.columnMain}</p>
             <ul className="list-none m-0 p-0 space-y-2 text-sm text-white/90">
-              {quickLinkPaths.map(({ key, path }) => (
+              {mainNavKeys.map((key) => (
                 <li key={key}>
-                  <Link href={path ? `${base}/${path}` : base} className="hover:text-white transition">
+                  <Link
+                    href={mainNavPaths[key] ? `${base}/${mainNavPaths[key]}` : base}
+                    className="hover:text-white transition"
+                  >
+                    {translations.nav[key]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3 — Legal */}
+          <div>
+            <p className="font-semibold mb-3">{f.columnLegal}</p>
+            <ul className="list-none m-0 p-0 space-y-2 text-sm text-white/90">
+              {legalNavKeys.map((key) => (
+                <li key={key}>
+                  <Link
+                    href={`${base}/${legalNavPaths[key]}`}
+                    className="hover:text-white transition"
+                  >
                     {translations.nav[key]}
                   </Link>
                 </li>
@@ -108,12 +135,14 @@ export function Footer({ locale, translations }: Props) {
               </li>
             </ul>
           </div>
+
+          {/* Column 4 — Contacts + Language */}
           <div>
-            <p className="font-semibold mb-3">{translations.contact.contactBlock}</p>
+            <p className="font-semibold mb-3">{f.columnContacts}</p>
             <div className="flex items-center gap-2">
               <a
                 href={`mailto:${EMAIL}`}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+                className={ICON_BUTTON_CLASS}
                 aria-label={translations.contact.emailBtn}
                 title={translations.contact.emailBtn}
               >
@@ -123,7 +152,7 @@ export function Footer({ locale, translations }: Props) {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+                className={ICON_BUTTON_CLASS}
                 aria-label={translations.contact.whatsapp}
                 title={translations.contact.whatsapp}
               >
@@ -133,25 +162,20 @@ export function Footer({ locale, translations }: Props) {
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+                className={ICON_BUTTON_CLASS}
                 aria-label={translations.contact.telegram}
                 title={translations.contact.telegram}
               >
                 {TELEGRAM_ICON}
               </a>
             </div>
-            <p className="mt-3 text-sm text-white/90">
-              {translations.contact.email}:{' '}
-              <a href={`mailto:${EMAIL}`} className="hover:text-white transition">
-                {EMAIL}
-              </a>
-            </p>
-            <p className="font-semibold mt-5 mb-2">{translations.footer.language}</p>
+            <p className="font-semibold mt-6 mb-2">{f.language}</p>
             <FooterLang currentLocale={locale} />
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-white/20 text-center text-sm text-white/70">
-          {translations.footer.copyright.replace('{year}', String(year))}
+
+        <div className="mt-10 pt-6 border-t border-white/20 text-center text-sm text-white/70">
+          {f.copyright.replace('{year}', String(year))}
         </div>
       </div>
     </footer>

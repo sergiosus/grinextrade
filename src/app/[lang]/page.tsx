@@ -1,7 +1,6 @@
 import type { Locale } from '@/lib/i18n/config';
 import { getTranslations } from '@/lib/i18n/translations';
 import { generateSeoMetadata, OrganizationJsonLd } from '@/components/Seo';
-import { ContactForm } from '@/components/ContactForm';
 import { HeroSection } from '@/components/HeroSection';
 import Link from 'next/link';
 
@@ -158,27 +157,6 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-brand-black text-center mb-8 uppercase tracking-wide">
-            {t.home.exportDocTitle}
-          </h2>
-          <ul className="max-w-2xl mx-auto space-y-3 text-gray-medium mb-6">
-            {(t.home.exportDocList ?? []).map((doc) => (
-              <li key={doc} className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                {doc}
-              </li>
-            ))}
-          </ul>
-          <p className="text-center text-gray-medium max-w-2xl mx-auto">
-            {t.home.exportDocNote}
-          </p>
-        </div>
-      </section>
-
       <section className="py-16 md:py-20 bg-gray-light">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-brand-black mb-6">
@@ -193,34 +171,6 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-brand-black text-center mb-6">
-            {t.home.exportComplianceTitle}
-          </h2>
-          <div className="max-w-3xl mx-auto text-center space-y-4 text-gray-medium">
-            <p>{t.home.exportComplianceP1}</p>
-            <p>{t.home.exportComplianceP2}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative py-16 md:py-20 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/contact.jpg')" }}
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-primary/60" aria-hidden />
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white text-center mb-8 drop-shadow-lg">
-            {t.home.contactForm}
-          </h2>
-          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-white/20 p-6 md:p-8">
-            <ContactForm translations={t} />
-          </div>
-        </div>
-      </section>
     </>
   );
 }

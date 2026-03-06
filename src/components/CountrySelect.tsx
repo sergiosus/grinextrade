@@ -9,9 +9,10 @@ type Props = {
   placeholder?: string;
   id?: string;
   className?: string;
+  hasError?: boolean;
 };
 
-export function CountrySelect({ value, onChange, placeholder = 'Select or type country', id, className = '' }: Props) {
+export function CountrySelect({ value, onChange, placeholder = 'Select or type country', id, className = '', hasError }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [highlightIndex, setHighlightIndex] = useState(0);
@@ -89,7 +90,7 @@ export function CountrySelect({ value, onChange, placeholder = 'Select or type c
         aria-autocomplete="list"
         aria-controls="country-listbox"
         aria-activedescendant={open && slice[highlightIndex] ? `country-option-${highlightIndex}` : undefined}
-        className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary focus:border-primary ${hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-medium/30'}`}
       />
       {open && (
         <ul

@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useState,
+  useMemo,
   type ReactNode,
 } from 'react';
 import type { Locale } from '@/lib/i18n/config';
@@ -28,6 +29,31 @@ type ProviderProps = {
   locale: Locale;
   translations: Translations;
 };
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type FieldErrors = Partial<Record<'company' | 'contactPerson' | 'email' | 'country' | 'message', string>>;
+
+function validate(
+  data: { company: string; contactPerson: string; email: string; country: string; message: string },
+  v: Translations['common']
+): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!data.company.trim()) errors.company = v.validationCompanyName;
+  if (!data.contactPerson.trim()) errors.contactPerson = v.validationContactPerson;
+  if (!data.email.trim()) errors.email = v.validationEmail;
+  else if (!EMAIL_REGEX.test(data.email.trim())) errors.email = v.validationEmail;
+  if (!data.country.trim()) errors.country = v.validationCountry;
+  if (!data.message.trim()) errors.message = v.validationMessage;
+  return errors;
+}
+
+function isValid(
+  data: { company: string; contactPerson: string; email: string; country: string; message: string },
+  v: Translations['common']
+): boolean {
+  return Object.keys(validate(data, v)).length === 0;
+}
 
 export function QuoteModalProvider({ children, locale, translations }: ProviderProps) {
   const [open, setOpen] = useState(false);
@@ -55,10 +81,6 @@ export function QuoteModalProvider({ children, locale, translations }: ProviderP
   );
 }
 
-const WHATSAPP_URL = 'https://wa.me/79124475419';
-const EMAIL = 'info@grinextrade.com';
-const EMAIL_SUBJECT = 'Quote request — Grinex Trade LLC';
-
 type ModalProps = {
   initialProduct: string;
   onClose: () => void;
@@ -67,24 +89,23 @@ type ModalProps = {
 };
 
 function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProps) {
-  const t = (translations as Translations & { quoteModal?: Record<string, string> }).quoteModal ?? {
+  const t = useMemo(() => (translations as Translations & { quoteModal?: Record<string, string> }).quoteModal ?? {
     title: 'Request Quote',
-    productLabel: 'Product',
-    quantityLabel: 'Quantity',
-    requestQuoteButton: 'REQUEST QUOTE',
     companyName: 'Company name',
     contactPerson: 'Contact person',
     email: 'Email',
     phone: 'Phone',
     country: 'Country',
     countryPlaceholder: 'Country',
+    productLabel: 'Product',
+    quantityLabel: 'Quantity',
     message: 'Message',
-    sendViaWhatsApp: 'Send via WhatsApp',
-    sendViaEmail: 'Send via Email',
     close: 'Close',
-    toastDraft: 'Draft prepared. Send it in WhatsApp/Email.',
-  };
-  const rfqSuccess = (translations as Translations).common?.rfqSuccess ?? 'Thank you. Our sales team will contact you shortly.';
+    sendRequest: 'Send Request',
+    successMessage: 'Thank you. Your request has been sent. We will contact you shortly.',
+    errorMessage: 'Failed to send request. Please try again later.',
+  }, [translations]);
+  const common = translations.common;
 
   const [product, setProduct] = useState(initialProduct);
   const [quantity, setQuantity] = useState('');
@@ -94,194 +115,227 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
   const [message, setMessage] = useState('');
-  const [toast, setToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<'form' | 'success' | 'error'>('form');
 
-  const isProductReadonly = !!initialProduct;
+  const formData = useMemo(() => ({
+    company: company.trim(),
+    contactPerson: contactPerson.trim(),
+    email: email.trim(),
+    country: country.trim(),
+    message: message.trim(),
+  }), [company, contactPerson, email, country, message]);
 
-  const quantityLabel = t.quantityLabel ?? 'Quantity';
+  const valid = useMemo(() => isValid(formData, common), [formData, common]);
 
-  const buildBody = useCallback(() => {
-    return [
-      t.productLabel + ': ' + (product || '-'),
-      quantityLabel + ': ' + quantity,
-      t.companyName + ': ' + company,
-      t.contactPerson + ': ' + contactPerson,
-      t.email + ': ' + email,
-      t.phone + ': ' + phone,
-      t.country + ': ' + country,
-      t.message + ': ' + message,
-    ].join('\n');
-  }, [t, product, quantity, quantityLabel, company, contactPerson, email, phone, country, message]);
+  const inputBorder = (field: keyof FieldErrors) =>
+    errors[field] ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary';
 
-  const buildWhatsAppText = useCallback(() => {
-    return encodeURIComponent(buildBody());
-  }, [buildBody]);
-
-  const showToast = useCallback((msg: string) => {
-    setToastMessage(msg);
-    setToast(true);
-    setTimeout(() => setToast(false), 4000);
+  const clearError = useCallback((field: keyof FieldErrors) => {
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
   }, []);
 
-  const handleRequestQuote = () => {
-    const body = buildBody();
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
-    showToast(rfqSuccess);
-    setTimeout(onClose, 2500);
-  };
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+    const nextErrors = validate(formData, common);
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+    setIsSubmitting(true);
+    setStatus('form');
+    try {
+      const res = await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyName: formData.company,
+          contactPerson: formData.contactPerson,
+          email: formData.email,
+          phone: phone.trim() || undefined,
+          country: formData.country,
+          productName: product.trim() || undefined,
+          quantity: quantity.trim() || undefined,
+          message: formData.message,
+          source: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        }),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setTimeout(onClose, 2500);
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [formData, common, phone, product, quantity, onClose]);
 
-  const handleWhatsApp = () => {
-    window.open(`${WHATSAPP_URL}?text=${buildWhatsAppText()}`, '_blank');
-    showToast(t.toastDraft ?? 'Draft prepared. Send it in WhatsApp/Email.');
-  };
-
-  const handleEmail = () => {
-    const body = buildBody();
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
-    showToast(t.toastDraft ?? 'Draft prepared. Send it in WhatsApp/Email.');
-  };
+  if (status === 'success') {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden />
+        <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-gray-light p-8 text-center">
+          <p className="text-green-600 font-medium mb-4">{t.successMessage}</p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-sm text-gray-medium hover:text-brand-black"
+          >
+            {t.close}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} aria-hidden />
-        <div
-          className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-gray-light max-h-[90vh] overflow-y-auto"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="quote-modal-title"
-        >
-          <div className="sticky top-0 bg-white border-b border-gray-light px-6 py-4 flex items-center justify-between">
-            <h2 id="quote-modal-title" className="text-xl font-bold text-brand-black">
-              {t.title}
-            </h2>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} aria-hidden />
+      <div
+        className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-gray-light max-h-[90vh] overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quote-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white border-b border-gray-light px-6 py-4 flex items-center justify-between z-10">
+          <h2 id="quote-modal-title" className="text-xl font-bold text-brand-black">
+            {t.title}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg text-gray-medium hover:bg-gray-light transition"
+            aria-label={t.close}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form className="p-6 space-y-4" onSubmit={handleSubmit}>
+          {status === 'error' && (
+            <p className="p-3 rounded-lg bg-red-100 text-red-700 text-sm">
+              {t.errorMessage}
+            </p>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.companyName}</label>
+            <input
+              type="text"
+              value={company}
+              onChange={(e) => { setCompany(e.target.value); clearError('company'); }}
+              className={`w-full px-4 py-2.5 rounded-lg border ${inputBorder('company')}`}
+              aria-invalid={!!errors.company}
+            />
+            {errors.company && <p className="mt-1 text-sm text-red-600">{errors.company}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.contactPerson}</label>
+            <input
+              type="text"
+              value={contactPerson}
+              onChange={(e) => { setContactPerson(e.target.value); clearError('contactPerson'); }}
+              className={`w-full px-4 py-2.5 rounded-lg border ${inputBorder('contactPerson')}`}
+              aria-invalid={!!errors.contactPerson}
+            />
+            {errors.contactPerson && <p className="mt-1 text-sm text-red-600">{errors.contactPerson}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-brand-black mb-1">{t.email}</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); clearError('email'); }}
+                className={`w-full px-4 py-2.5 rounded-lg border ${inputBorder('email')}`}
+                aria-invalid={!!errors.email}
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-brand-black mb-1">{t.phone}</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.country}</label>
+            <CountrySelect
+              value={country}
+              onChange={(v) => { setCountry(v); clearError('country'); }}
+              placeholder={t.countryPlaceholder}
+              className="w-full"
+              hasError={!!errors.country}
+            />
+            {errors.country && <p className="mt-1 text-sm text-red-600">{errors.country}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.productLabel}</label>
+            <input
+              type="text"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.quantityLabel}</label>
+            <input
+              type="text"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder="e.g. 1000 pcs"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-black mb-1">{t.message}</label>
+            <textarea
+              value={message}
+              onChange={(e) => { setMessage(e.target.value); clearError('message'); }}
+              rows={3}
+              className={`w-full px-4 py-2.5 rounded-lg border ${inputBorder('message')}`}
+              aria-invalid={!!errors.message}
+            />
+            {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+          </div>
+
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={!valid || isSubmitting}
+              className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-accent-red transition disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? common.submitting : t.sendRequest}
+            </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-lg text-gray-medium hover:bg-gray-light transition"
-              aria-label={t.close}
+              className="px-5 py-2.5 border border-gray-medium text-brand-black font-medium rounded-lg hover:bg-gray-light transition"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              {t.close}
             </button>
           </div>
-          <form className="p-6 space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{t.productLabel}</label>
-              <input
-                type="text"
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                readOnly={isProductReadonly}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 bg-gray-light/50 read-only:opacity-80"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{quantityLabel}</label>
-              <input
-                type="text"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                placeholder="e.g. 1000 pcs"
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{t.companyName}</label>
-              <input
-                type="text"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{t.contactPerson}</label>
-              <input
-                type="text"
-                value={contactPerson}
-                onChange={(e) => setContactPerson(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-brand-black mb-1">{t.email}</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-brand-black mb-1">{t.phone}</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{t.country}</label>
-              <CountrySelect
-                value={country}
-                onChange={setCountry}
-                placeholder={t.countryPlaceholder}
-                className="w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-black mb-1">{t.message}</label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <button
-                type="button"
-                onClick={handleRequestQuote}
-                className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-accent-red transition"
-              >
-                {t.requestQuoteButton ?? 'REQUEST QUOTE'}
-              </button>
-              <button
-                type="button"
-                onClick={handleWhatsApp}
-                className="px-5 py-2.5 bg-[#25D366] text-white font-medium rounded-lg hover:opacity-90 transition"
-              >
-                {t.sendViaWhatsApp}
-              </button>
-              <button
-                type="button"
-                onClick={handleEmail}
-                className="px-5 py-2.5 bg-brand-black text-white font-medium rounded-lg hover:opacity-90 transition"
-              >
-                {t.sendViaEmail}
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-5 py-2.5 border border-gray-medium text-brand-black font-medium rounded-lg hover:bg-gray-light transition"
-              >
-                {t.close}
-              </button>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
-      {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[101] px-6 py-3 bg-primary text-white rounded-xl shadow-lg text-sm font-medium">
-          {toastMessage}
-        </div>
-      )}
-    </>
+    </div>
   );
 }

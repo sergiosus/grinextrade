@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n/config';
 import { locales, localeNames, isRtl } from '@/lib/i18n/config';
 import type { Translations } from '@/lib/i18n/translations';
-import { useQuoteModal } from '@/contexts/QuoteModalContext';
 import { useState, useRef, useEffect } from 'react';
 
 const WHATSAPP_URL = 'https://wa.me/79124475419';
@@ -81,7 +80,6 @@ export function Header({ locale, translations }: Props) {
   const [langOpen, setLangOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
-  const { openQuoteModal } = useQuoteModal();
 
   useEffect(() => {
     function handleScroll() {
@@ -199,14 +197,6 @@ export function Header({ locale, translations }: Props) {
 
             <button
               type="button"
-              onClick={() => openQuoteModal()}
-              className="hidden sm:inline-flex px-4 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition"
-            >
-              {translations.nav.requestQuote}
-            </button>
-
-            <button
-              type="button"
               className="md:hidden p-2 rounded-lg text-brand-black hover:bg-gray-light"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Menu"
@@ -235,13 +225,6 @@ export function Header({ locale, translations }: Props) {
                   {label}
                 </Link>
               ))}
-              <button
-                type="button"
-                onClick={() => { openQuoteModal(); setMenuOpen(false); }}
-                className="px-4 py-3 rounded-lg text-left font-medium bg-primary text-white hover:bg-accent-red w-full rtl:text-right"
-              >
-                {translations.nav.requestQuote}
-              </button>
             </div>
           </nav>
         )}

@@ -3,6 +3,7 @@ import { getTranslations } from '@/lib/i18n/translations';
 import { generateSeoMetadata } from '@/components/Seo';
 import { getProducts } from '@/lib/products';
 import { ProductCard } from '@/components/ProductCard';
+import { ProductsCTA } from '@/components/ProductsCTA';
 import type { Translations } from '@/lib/i18n/translations';
 
 function getCategoryText(t: Translations, category: string): string {
@@ -49,17 +50,19 @@ export default async function ProductsPage({ params, searchParams }: Props) {
         {products.length === 0 ? (
           <p className="text-gray-medium py-12 text-center">{t.products.noProducts}</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                locale={lang}
-                requestQuoteText={t.products.requestQuote}
-                categoryText={getCategoryText(t, product.category)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  locale={lang}
+                  categoryText={getCategoryText(t, product.category)}
+                />
+              ))}
+            </div>
+            <ProductsCTA label={t.products.requestQuote} />
+          </>
         )}
       </div>
     </div>
