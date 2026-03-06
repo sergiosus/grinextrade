@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Grinex Trade LLC – Export Company',
-  description: 'Grinex Trade LLC supplies industrial and textile products for international B2B clients.',
+  title: 'Grinex Trade – Export Company',
+  description: 'Grinex Trade supplies industrial and textile products for international B2B clients.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

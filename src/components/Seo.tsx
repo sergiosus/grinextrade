@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import type { Locale } from '@/lib/i18n/config';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://grinextrade.com';
-const baseTitle = 'Grinex Trade LLC – Supplier of industrial and textile products';
+const baseTitle = 'Grinex Trade – Supplier of industrial and textile products';
 const baseDescription =
-  'Grinex Trade LLC supplies textile and industrial products for international B2B clients. Product range includes waffle towels, hotel bedding, O-rings and sealing solutions.';
+  'Grinex Trade supplies textile and industrial products for international B2B clients. Product range includes waffle towels, hotel bedding, O-rings and sealing solutions.';
 
 type Props = {
   title: string;
@@ -36,7 +36,7 @@ export function generateSeoMetadata({ title, description, path, locale, noIndex 
       title: resolvedTitle,
       description: resolvedDescription,
       url,
-      siteName: 'Grinex Trade LLC',
+      siteName: 'Grinex Trade',
       locale: lang,
       type: 'website',
     },
@@ -56,7 +56,7 @@ export function OrganizationJsonLd() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Grinex Trade LLC',
+    name: 'Grinex Trade',
     url: siteUrl,
     logo: `${siteUrl}/logo.png`,
     description: baseDescription,

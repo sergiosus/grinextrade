@@ -4,9 +4,6 @@ import { useState } from 'react';
 import type { Translations } from '@/lib/i18n/translations';
 import { CountrySelect } from '@/components/CountrySelect';
 
-const RFQ_EMAIL = 'info@grinextrade.com';
-const RFQ_SUBJECT = 'Quote request — Grinex Trade LLC';
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type FieldErrors = Partial<Record<'company' | 'contactPerson' | 'email' | 'country' | 'productName' | 'quantity' | 'message', string>>;
@@ -14,7 +11,7 @@ type FieldErrors = Partial<Record<'company' | 'contactPerson' | 'email' | 'count
 type Props = { translations: Translations; initialProductName?: string };
 
 function validate(
-  data: { company: string; contactPerson: string; email: string; country: string; productName: string; quantity: string; message: string },
+  data: { company: string; contactPerson: string; email: string; country: string; message: string },
   v: Translations['common']
 ): FieldErrors {
   const errors: FieldErrors = {};
@@ -23,8 +20,6 @@ function validate(
   if (!data.email.trim()) errors.email = v.validationEmail;
   else if (!EMAIL_REGEX.test(data.email.trim())) errors.email = v.validationEmail;
   if (!data.country.trim()) errors.country = v.validationCountry;
-  if (!data.productName.trim()) errors.productName = v.validationProductName;
-  if (!data.quantity.trim()) errors.quantity = v.validationQuantity;
   if (!data.message.trim()) errors.message = v.validationMessage;
   return errors;
 }
@@ -44,13 +39,14 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
 
   const common = t.common;
   const contactLabels = t.contact;
+  const quoteModal = t.quoteModal;
 
   const inputBorder = (field: keyof FieldErrors) =>
     errors[field]
       ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
       : 'border-gray-medium/30 focus:ring-2 focus:ring-primary focus:border-primary';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
     const data = {
@@ -58,8 +54,6 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
       contactPerson: contactPerson.trim(),
       email: email.trim(),
       country: country.trim(),
-      productName: productName.trim(),
-      quantity: quantity.trim(),
       message: message.trim(),
     };
     const nextErrors = validate(data, common);
@@ -68,27 +62,42 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
       return;
     }
     setIsSubmitting(true);
-    const body = [
-      t.contact.companyName + ': ' + data.company,
-      t.contact.contactPerson + ': ' + data.contactPerson,
-      t.contact.email + ': ' + data.email,
-      t.contact.phone + ': ' + (phone.trim() || '—'),
-      t.contact.country + ': ' + data.country,
-      t.contact.productName + ': ' + data.productName,
-      t.contact.quantity + ': ' + data.quantity,
-      t.contact.message + ': ' + data.message,
-    ].join('\n');
-    window.location.href = `mailto:${RFQ_EMAIL}?subject=${encodeURIComponent(RFQ_SUBJECT)}&body=${encodeURIComponent(body)}`;
-    setStatus('success');
-    setIsSubmitting(false);
-    setCompany('');
-    setContactPerson('');
-    setEmail('');
-    setPhone('');
-    setCountry('');
-    setProductName('');
-    setQuantity('');
-    setMessage('');
+    setStatus('idle');
+    try {
+      const res = await fetch('/api/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'contact',
+          companyName: data.company,
+          contactPerson: data.contactPerson,
+          email: data.email,
+          phone: phone.trim() || undefined,
+          country: data.country,
+          productName: productName.trim() || undefined,
+          quantity: quantity.trim() || undefined,
+          message: data.message,
+          pageUrl: typeof window !== 'undefined' ? window.location.href : undefined,
+        }),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setCompany('');
+        setContactPerson('');
+        setEmail('');
+        setPhone('');
+        setCountry('');
+        setProductName('');
+        setQuantity('');
+        setMessage('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -205,7 +214,7 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
           disabled={isSubmitting}
           className="w-full sm:w-auto px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent-red transition disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? common.submitting : contactLabels.requestQuote}
+          {isSubmitting ? common.submitting : quoteModal.sendRequest}
         </button>
       </div>
     </form>

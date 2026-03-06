@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: Props) {
   const t = getTranslations(lang);
   return generateSeoMetadata({
     title: t.government.title,
-    description: t.government.intro + ' - Grinex Trade LLC',
+    description: t.government.intro + ' - Grinex Trade',
     path: '/government',
     locale: lang,
   });

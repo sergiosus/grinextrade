@@ -147,10 +147,11 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
     setIsSubmitting(true);
     setStatus('form');
     try {
-      const res = await fetch('/api/quote', {
+      const res = await fetch('/api/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          source: 'product',
           companyName: formData.company,
           contactPerson: formData.contactPerson,
           email: formData.email,
@@ -159,7 +160,7 @@ function QuoteModal({ initialProduct, onClose, locale, translations }: ModalProp
           productName: product.trim() || undefined,
           quantity: quantity.trim() || undefined,
           message: formData.message,
-          source: typeof window !== 'undefined' ? window.location.pathname : undefined,
+          pageUrl: typeof window !== 'undefined' ? window.location.href : undefined,
         }),
       });
       if (res.ok) {

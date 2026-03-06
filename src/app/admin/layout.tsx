@@ -7,7 +7,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <header className="bg-slate-900 text-white py-4">
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
           <Link href="/admin" className="font-bold text-lg">
-            Grinex Trade LLC — Admin
+            Grinex Trade — Admin
           </Link>
           <Link href="/en" className="text-sm text-slate-300 hover:text-white">
             View site

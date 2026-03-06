@@ -90,12 +90,10 @@ export function Footer({ locale, translations }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {/* Column 1 — Company */}
-          <div>
+          <div className="max-w-[360px]">
             <p className="font-bold text-lg">{f.company}</p>
-            <p className="mt-3 text-sm text-white/85 leading-relaxed">
-              {f.companyDesc1}
-              <br />
-              {f.companyDesc2}
+            <p className="mt-3 text-sm text-white/85 leading-[1.55] break-words">
+              {f.companyDesc1}{f.companyDesc2 ? ` ${f.companyDesc2}` : ''}
             </p>
           </div>
 
