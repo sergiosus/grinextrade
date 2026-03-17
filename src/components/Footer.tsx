@@ -88,16 +88,8 @@ export function Footer({ locale, translations }: Props) {
   return (
     <footer className="bg-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-          {/* Column 1 — Company */}
-          <div className="max-w-[360px]">
-            <p className="font-bold text-lg">{f.company}</p>
-            <p className="mt-3 text-sm text-white/85 leading-[1.55] break-words">
-              {f.companyDesc1}{f.companyDesc2 ? ` ${f.companyDesc2}` : ''}
-            </p>
-          </div>
-
-          {/* Column 2 — Main */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 lg:gap-8">
+          {/* Column 1 — Company / Main navigation */}
           <div>
             <p className="font-semibold mb-3">{f.columnMain}</p>
             <ul className="list-none m-0 p-0 space-y-2 text-sm text-white/90">
@@ -114,7 +106,7 @@ export function Footer({ locale, translations }: Props) {
             </ul>
           </div>
 
-          {/* Column 3 — Legal */}
+          {/* Column 2 — Legal / Export / Documents */}
           <div>
             <p className="font-semibold mb-3">{f.columnLegal}</p>
             <ul className="list-none m-0 p-0 space-y-2 text-sm text-white/90">
@@ -134,7 +126,7 @@ export function Footer({ locale, translations }: Props) {
             </ul>
           </div>
 
-          {/* Column 4 — Contacts + Language */}
+          {/* Column 3 — Contacts / Language */}
           <div>
             <p className="font-semibold mb-3">{f.columnContacts}</p>
             <div className="flex items-center gap-2">
