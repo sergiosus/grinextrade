@@ -1,14 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import type { Locale } from '@/lib/i18n/config';
 import type { Translations } from '@/lib/i18n/translations';
 import { CountrySelect } from '@/components/CountrySelect';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type FieldErrors = Partial<Record<'company' | 'contactPerson' | 'email' | 'country' | 'productName' | 'quantity' | 'message', string>>;
+type FieldErrors = Partial<Record<'company' | 'contactPerson' | 'email' | 'country' | 'productName' | 'quantity' | 'message' | 'consent', string>>;
 
-type Props = { translations: Translations; initialProductName?: string };
+type Props = { translations: Translations; locale: Locale; initialProductName?: string };
 
 function validate(
   data: { company: string; contactPerson: string; email: string; country: string; message: string },
@@ -24,7 +26,7 @@ function validate(
   return errors;
 }
 
-export function ContactForm({ translations: t, initialProductName = '' }: Props) {
+export function ContactForm({ translations: t, locale, initialProductName = '' }: Props) {
   const [company, setCompany] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [email, setEmail] = useState('');
@@ -33,6 +35,7 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
   const [productName, setProductName] = useState(initialProductName);
   const [quantity, setQuantity] = useState('');
   const [message, setMessage] = useState('');
+  const [consentChecked, setConsentChecked] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -49,6 +52,10 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    if (common.consentLabel && !consentChecked) {
+      setErrors({ consent: common.consentError });
+      return;
+    }
     const data = {
       company: company.trim(),
       contactPerson: contactPerson.trim(),
@@ -90,6 +97,7 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
         setProductName('');
         setQuantity('');
         setMessage('');
+        setConsentChecked(false);
       } else {
         setStatus('error');
       }
@@ -208,6 +216,41 @@ export function ContactForm({ translations: t, initialProductName = '' }: Props)
         />
         {errors.message && <p className="mt-0.5 text-xs text-red-600">{errors.message}</p>}
       </div>
+
+      {common.consentLabel && (
+        <div className="pt-0.5">
+          <label className="flex items-start gap-2.5 cursor-pointer text-sm text-brand-black">
+            <input
+              type="checkbox"
+              checked={consentChecked}
+              onChange={(e) => {
+                setConsentChecked(e.target.checked);
+                setErrors((prev) => ({ ...prev, consent: undefined }));
+              }}
+              className="mt-0.5 h-4 w-4 rounded border-gray-medium/50 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0"
+              aria-invalid={!!errors.consent}
+            />
+            <span>
+              {(() => {
+                const { consentLabel: lbl, consentPrivacyText: pText, consentTermsText: tText } = common;
+                if (!pText || !tText) return lbl;
+                const [before, afterPrivacy] = lbl.split(pText, 2);
+                const [between, afterTerms] = afterPrivacy != null ? afterPrivacy.split(tText, 2) : ['', ''];
+                return (
+                  <>
+                    {before}
+                    <Link href={`/${locale}/privacy`} className="text-primary hover:text-accent-red hover:underline">{pText}</Link>
+                    {between}
+                    <Link href={`/${locale}/terms`} className="text-primary hover:text-accent-red hover:underline">{tText}</Link>
+                    {afterTerms}
+                  </>
+                );
+              })()}
+            </span>
+          </label>
+          {errors.consent && <p className="mt-0.5 text-xs text-red-600">{errors.consent}</p>}
+        </div>
+      )}
 
       <div className="pt-1">
         <button
